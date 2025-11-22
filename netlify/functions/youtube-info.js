@@ -1,29 +1,16 @@
 const ytdl = require('ytdl-core');
 
-exports.handler = async (event, context) => {
-  // Enable CORS
+exports.handler = async (event) => {
+  // CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
   };
 
-  // Handle preflight request
+  // Handle preflight
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers,
-      body: ''
-    };
-  }
-
-  // Only allow GET requests
-  if (event.httpMethod !== 'GET') {
-    return {
-      statusCode: 405,
-      headers,
-      body: JSON.stringify({ error: 'Method not allowed' })
-    };
+    return { statusCode: 200, headers, body: '' };
   }
 
   try {
@@ -33,79 +20,67 @@ exports.handler = async (event, context) => {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'URL parameter is required' })
+        body: JSON.stringify({ error: 'URL is required' })
       };
     }
 
-    // Validate YouTube URL
-    if (!ytdl.validateURL(url)) {
+    // Basic URL validation
+    if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Invalid YouTube URL' })
+        body: JSON.stringify({ error: 'Please enter a valid YouTube URL' })
       };
     }
 
     // Get video info
     const info = await ytdl.getInfo(url);
-    const videoDetails = info.videoDetails;
+    const details = info.videoDetails;
 
     // Get available formats
-    const formats = ytdl.filterFormats(info.formats, 'videoandaudio')
+    const formats = info.formats
+      .filter(format => format.hasVideo || format.hasAudio)
+      .slice(0, 8) // Limit to 8 formats
       .map(format => ({
         quality: format.qualityLabel || 'Audio',
         format: format.container,
-        size: format.contentLength ? (format.contentLength / (1024 * 1024)).toFixed(2) + ' MB' : 'Unknown',
+        size: format.contentLength ? Math.round(format.contentLength / (1024 * 1024)) + ' MB' : 'Unknown',
         itag: format.itag,
-        hasVideo: format.hasVideo,
-        hasAudio: format.hasAudio
+        type: format.hasVideo ? 'video' : 'audio'
       }));
-
-    // Add audio-only formats
-    const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-    audioFormats.forEach(format => {
-      formats.push({
-        quality: 'Audio',
-        format: format.container,
-        size: format.contentLength ? (format.contentLength / (1024 * 1024)).toFixed(2) + ' MB' : 'Unknown',
-        itag: format.itag,
-        hasVideo: false,
-        hasAudio: true
-      });
-    });
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
-        title: videoDetails.title,
-        duration: formatDuration(videoDetails.lengthSeconds),
-        thumbnail: videoDetails.thumbnails[videoDetails.thumbnails.length - 1].url, // Use largest thumbnail
-        author: videoDetails.author.name,
+        title: details.title,
+        duration: formatTime(details.lengthSeconds),
+        thumbnail: details.thumbnails[0]?.url || '',
+        author: details.author?.name || 'Unknown',
         formats: formats
       })
     };
 
   } catch (error) {
-    console.error('Error fetching video info:', error);
+    console.error('Error:', error);
     return {
       statusCode: 500,
       headers,
       body: JSON.stringify({ 
-        error: 'Failed to fetch video information',
-        message: error.message 
+        error: 'Failed to get video info',
+        details: error.message 
       })
     };
   }
 };
 
-function formatDuration(seconds) {
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
+function formatTime(seconds) {
+  const hrs = Math.floor(seconds / 3600);
+  const mins = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
   
-  if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  if (hrs > 0) {
+    return `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }
-  return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
