@@ -37,6 +37,7 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Validate YouTube URL
     if (!ytdl.validateURL(url)) {
       return {
         statusCode: 400,
@@ -45,29 +46,33 @@ exports.handler = async (event, context) => {
       };
     }
 
+    // Get video info
     const info = await ytdl.getInfo(url);
     const videoDetails = info.videoDetails;
 
-    // Get video formats
-    const videoFormats = ytdl.filterFormats(info.formats, 'videoandaudio');
-    const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
-
-    const formats = [
-      ...videoFormats.map(format => ({
-        quality: format.qualityLabel || 'Unknown',
+    // Get available formats
+    const formats = ytdl.filterFormats(info.formats, 'videoandaudio')
+      .map(format => ({
+        quality: format.qualityLabel || 'Audio',
         format: format.container,
         size: format.contentLength ? (format.contentLength / (1024 * 1024)).toFixed(2) + ' MB' : 'Unknown',
         itag: format.itag,
-        type: 'video'
-      })),
-      ...audioFormats.map(format => ({
+        hasVideo: format.hasVideo,
+        hasAudio: format.hasAudio
+      }));
+
+    // Add audio-only formats
+    const audioFormats = ytdl.filterFormats(info.formats, 'audioonly');
+    audioFormats.forEach(format => {
+      formats.push({
         quality: 'Audio',
         format: format.container,
         size: format.contentLength ? (format.contentLength / (1024 * 1024)).toFixed(2) + ' MB' : 'Unknown',
         itag: format.itag,
-        type: 'audio'
-      }))
-    ];
+        hasVideo: false,
+        hasAudio: true
+      });
+    });
 
     return {
       statusCode: 200,
@@ -75,14 +80,14 @@ exports.handler = async (event, context) => {
       body: JSON.stringify({
         title: videoDetails.title,
         duration: formatDuration(videoDetails.lengthSeconds),
-        thumbnail: videoDetails.thumbnails[0].url,
+        thumbnail: videoDetails.thumbnails[videoDetails.thumbnails.length - 1].url, // Use largest thumbnail
         author: videoDetails.author.name,
         formats: formats
       })
     };
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error fetching video info:', error);
     return {
       statusCode: 500,
       headers,
