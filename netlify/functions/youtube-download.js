@@ -61,13 +61,12 @@ exports.handler = async (event, context) => {
         downloadUrl: format.url,
         title: info.videoDetails.title,
         quality: format.qualityLabel || 'Audio',
-        format: format.container,
-        filename: `${info.videoDetails.title}.${format.container}`
+        format: format.container
       })
     };
 
   } catch (error) {
-    console.error('Error:', error);
+    console.error('Error in download function:', error);
     return {
       statusCode: 500,
       headers,
