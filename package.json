@@ -1,0 +1,15 @@
+{
+  "name": "youtube-downloader-backend",
+  "version": "1.0.0",
+  "description": "Backend API for YouTube Downloader",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  },
+  "dependencies": {
+    "ytdl-core": "^4.11.5"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
