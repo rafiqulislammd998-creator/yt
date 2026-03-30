@@ -371,23 +371,23 @@
             border-color: rgba(255,255,255,0.3);
         }
 
-        /* YouTube Music Player */
+        /* YouTube Music Widget - Enhanced with Search */
         .music-widget {
             position: fixed;
             bottom: 100px;
             right: 2rem;
-            width: 350px;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(20px);
+            width: 380px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(30px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 1.25rem;
+            border-radius: 24px;
+            padding: 1.5rem;
             z-index: 50;
             transform: translateY(20px);
             opacity: 0;
             pointer-events: none;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
         }
 
         .music-widget.open {
@@ -447,21 +447,129 @@
             transform: scale(1.1);
         }
 
-        .video-container {
-            position: relative;
-            width: 100%;
-            height: 180px;
-            background: #000;
-            border-radius: 12px;
-            overflow: hidden;
+        /* Search Section */
+        .search-section {
             margin-bottom: 1rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        #youtubePlayer {
-            width: 100%;
-            height: 100%;
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .search-btn {
+            padding: 0.75rem 1rem;
+            background: var(--accent);
             border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Search Results */
+        .search-results {
+            max-height: 150px;
+            overflow-y: auto;
+            display: none;
+            margin-bottom: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .search-results.active {
+            display: block;
+        }
+
+        .result-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.85rem;
+        }
+
+        .result-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-thumbnail {
+            width: 40px;
+            height: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .result-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-title {
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .result-channel {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Quick Presets */
+        .presets-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .playlist-selector {
@@ -469,7 +577,7 @@
             gap: 0.5rem;
             overflow-x: auto;
             padding-bottom: 0.5rem;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
             scrollbar-width: none;
         }
 
@@ -500,11 +608,28 @@
             color: white;
         }
 
+        .video-container {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #youtubePlayer {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
         .volume-slider {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-top: 0.75rem;
         }
 
         .volume-slider input[type="range"] {
@@ -518,11 +643,12 @@
 
         .volume-slider input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
+            width: 14px;
+            height: 14px;
             background: white;
             border-radius: 50%;
             cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .now-playing {
@@ -541,7 +667,7 @@
             top: 0;
             width: 380px;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(30px);
             border-left: 1px solid var(--glass-border);
             z-index: 100;
@@ -573,6 +699,35 @@
             pointer-events: all;
         }
 
+        /* Scrollbar for search results */
+        .search-results::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .search-results::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .search-results::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+        }
+
+        /* Loading spinner */
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .music-widget {
@@ -585,6 +740,7 @@
             .music-widget.minimized {
                 right: 1rem;
                 bottom: 1rem;
+                left: auto;
             }
         }
 
@@ -616,7 +772,7 @@
             <div class="logo">FlowState</div>
             <div class="top-controls">
                 <button class="icon-btn" onclick="toggleFullscreen()" title="Fullscreen">⛶</button>
-                <button class="icon-btn" onclick="toggleMusicWidget()" id="musicBtn" title="Music">🎵</button>
+                <button class="icon-btn" onclick="toggleMusicWidget()" id="musicBtn" title="Music (M)">🎵</button>
                 <button class="icon-btn" onclick="toggleMute()" id="muteBtn">🔊</button>
                 <button class="icon-btn" onclick="openSettings()">⚙</button>
             </div>
@@ -663,16 +819,41 @@
         </div>
     </div>
 
-    <!-- YouTube Music Widget -->
+    <!-- YouTube Music Widget with Search -->
     <div class="music-widget" id="musicWidget">
         <div class="music-header">
             <div class="music-title">
                 <span style="color: var(--youtube-red);">●</span>
-                <span id="currentTrack">Select a playlist</span>
+                <span id="currentTrack">Study Music</span>
             </div>
             <div class="music-controls">
                 <button class="music-btn" onclick="togglePlay()" id="playMusicBtn">▶</button>
                 <button class="music-btn" onclick="minimizeMusic()">−</button>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-input-wrapper">
+                <input type="text" class="search-input" id="searchInput" 
+                       placeholder="Paste YouTube URL or Video ID..." 
+                       onkeypress="handleSearchKeypress(event)">
+                <button class="search-btn" onclick="searchAndPlay()" id="searchBtn">
+                    <span id="searchIcon">▶</span>
+                </button>
+            </div>
+            
+            <!-- Search Results -->
+            <div class="search-results" id="searchResults"></div>
+
+            <div class="presets-label">Popular Study Music</div>
+            <div class="playlist-selector">
+                <div class="playlist-chip active" onclick="loadPlaylist('jfKfPfyJRdk', 'Lofi Girl', this)">Lofi Girl</div>
+                <div class="playlist-chip" onclick="loadPlaylist('mPZkdNFkNps', 'Rain Sounds', this)">Rain</div>
+                <div class="playlist-chip" onclick="loadPlaylist('nMfPWeZihzw', 'Nature Sounds', this)">Nature</div>
+                <div class="playlist-chip" onclick="loadPlaylist('1fueZCTYkpA', 'Classical', this)">Classical</div>
+                <div class="playlist-chip" onclick="loadPlaylist('rUxyKA7gr48', 'Jazz', this)">Jazz</div>
+                <div class="playlist-chip" onclick="loadPlaylist('DWcJFNfaw9c', 'Coffe Shop', this)">Coffee Shop</div>
             </div>
         </div>
         
@@ -680,25 +861,17 @@
             <div id="youtubePlayer"></div>
         </div>
 
-        <div class="playlist-selector">
-            <div class="playlist-chip active" onclick="loadPlaylist('jfKfPfyJRdk', 'Lofi Girl', this)">Lofi Girl</div>
-            <div class="playlist-chip" onclick="loadPlaylist('nMfPWeZihzw', 'Nature Sounds', this)">Nature</div>
-            <div class="playlist-chip" onclick="loadPlaylist('mPZkdNFkNps', 'Rain Sounds', this)">Rain</div>
-            <div class="playlist-chip" onclick="loadPlaylist('1fueZCTYkpA', 'Classical', this)">Classical</div>
-            <div class="playlist-chip" onclick="loadPlaylist('rUxyKA7gr48', 'Jazz', this)">Jazz</div>
-        </div>
-
         <div class="volume-slider">
-            <span>🔊</span>
+            <span style="font-size: 1.1rem;">🔊</span>
             <input type="range" min="0" max="100" value="50" id="volumeSlider" oninput="setVolume(this.value)">
-            <span style="font-size: 0.8rem; min-width: 30px;" id="volumeValue">50%</span>
+            <span style="font-size: 0.8rem; min-width: 35px; text-align: right;" id="volumeValue">50%</span>
         </div>
     </div>
 
-    <!-- Minimized Music Indicator -->
+    <!-- Minimized Music -->
     <div class="music-widget minimized" id="musicMinimized" onclick="maximizeMusic()">
         <span style="color: var(--youtube-red); font-size: 1.2rem;">▶</span>
-        <span class="now-playing" id="minimizedTrack">Click to play music</span>
+        <span class="now-playing" id="minimizedTrack">Click for music</span>
     </div>
 
     <!-- Side Panel -->
@@ -724,6 +897,20 @@
         let player;
         let isPlaying = false;
         let currentVolume = 50;
+
+        // Preset study music database (for search simulation)
+        const studyMusicDB = [
+            { id: 'jfKfPfyJRdk', title: 'Lofi Girl - Study Beats', channel: 'Lofi Girl', emoji: '🎵' },
+            { id: 'mPZkdNFkNps', title: 'Relaxing Rain Sounds', channel: 'Nature & Relaxation', emoji: '🌧️' },
+            { id: 'nMfPWeZihzw', title: 'Forest Sounds - Birds', channel: 'Nature Sounds', emoji: '🌲' },
+            { id: '1fueZCTYkpA', title: 'Classical Music for Studying', channel: 'Classical Mastery', emoji: '🎻' },
+            { id: 'rUxyKA7gr48', title: 'Coffee Shop Ambience', channel: 'Ambient Worlds', emoji: '☕' },
+            { id: 'DWcJFNfaw9c', title: 'Jazz Hop Cafe', channel: 'Chill Beats', emoji: '🎷' },
+            { id: '5qap5aO4i9A', title: 'Chill Study Beats', channel: 'ChilledCow', emoji: '📚' },
+            { id: 'lTRiuFIWV54', title: 'Ambient Study Music', channel: 'Relaxation Hub', emoji: '🧘' },
+            { id: 'W9P5kdT2EcY', title: 'Deep Focus Music', channel: 'Greenred Productions', emoji: '🎯' },
+            { id: 'sjkrrmBnpGE', title: 'Cinematic Ambient', channel: 'Ambient Music', emoji: '🎬' }
+        ];
 
         // State
         const state = {
@@ -790,6 +977,90 @@
             }
         }
 
+        // Search Functions
+        function handleSearchKeypress(e) {
+            if (e.key === 'Enter') {
+                searchAndPlay();
+            }
+        }
+
+        function extractVideoId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : url;
+        }
+
+        function searchAndPlay() {
+            const input = document.getElementById('searchInput');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            const videoId = extractVideoId(query);
+            
+            // If it looks like a direct ID (11 chars), play immediately
+            if (videoId.length === 11 && !query.includes(' ')) {
+                loadVideoById(videoId, 'Custom Track');
+                input.value = '';
+                hideSearchResults();
+                return;
+            }
+            
+            // Otherwise, show suggestions from preset DB
+            showSearchResults(query);
+        }
+
+        function showSearchResults(query) {
+            const resultsDiv = document.getElementById('searchResults');
+            const lowerQuery = query.toLowerCase();
+            
+            // Filter preset database
+            const matches = studyMusicDB.filter(item => 
+                item.title.toLowerCase().includes(lowerQuery) || 
+                item.channel.toLowerCase().includes(lowerQuery)
+            );
+            
+            if (matches.length === 0) {
+                resultsDiv.innerHTML = '<div class="result-item" style="opacity: 0.6; cursor: default;">No results found. Try direct YouTube URL</div>';
+            } else {
+                resultsDiv.innerHTML = matches.map(item => `
+                    <div class="result-item" onclick="playFromSearch('${item.id}', '${item.title.replace(/'/g, "\\'")}')">
+                        <div class="result-thumbnail">${item.emoji}</div>
+                        <div class="result-info">
+                            <div class="result-title">${item.title}</div>
+                            <div class="result-channel">${item.channel}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            resultsDiv.classList.add('active');
+        }
+
+        function playFromSearch(id, title) {
+            loadVideoById(id, title);
+            document.getElementById('searchInput').value = '';
+            hideSearchResults();
+            
+            // Update active chip
+            document.querySelectorAll('.playlist-chip').forEach(chip => chip.classList.remove('active'));
+        }
+
+        function hideSearchResults() {
+            document.getElementById('searchResults').classList.remove('active');
+        }
+
+        function loadVideoById(id, title) {
+            if (!player || !player.loadVideoById) return;
+            
+            player.loadVideoById(id);
+            document.getElementById('currentTrack').textContent = title;
+            document.getElementById('minimizedTrack').textContent = title;
+            
+            // Save to recent searches (optional enhancement)
+            updateMusicUI();
+        }
+
         function togglePlay() {
             if (!player || !player.playVideo) return;
             
@@ -797,27 +1068,17 @@
                 player.pauseVideo();
             } else {
                 player.playVideo();
-                // Autoplay policy workaround
-                if (player.getPlayerState() !== YT.PlayerState.PLAYING) {
-                    showToast('Click the video to start (browser policy)', '⚠️');
-                }
             }
         }
 
         function loadPlaylist(videoId, name, element) {
-            if (!player || !player.loadVideoById) return;
-            
-            player.loadVideoById(videoId);
-            document.getElementById('currentTrack').textContent = name;
-            document.getElementById('minimizedTrack').textContent = name;
+            loadVideoById(videoId, name);
             
             document.querySelectorAll('.playlist-chip').forEach(chip => {
                 chip.classList.remove('active');
             });
-            element.classList.add('active');
-            
-            isPlaying = true;
-            updateMusicUI();
+            if (element) element.classList.add('active');
+            hideSearchResults();
         }
 
         function setVolume(value) {
@@ -833,26 +1094,22 @@
             const minimized = document.getElementById('musicMinimized');
             
             if (widget.classList.contains('open')) {
-                widget.classList.remove('open');
-                minimized.style.opacity = '1';
-                minimized.style.pointerEvents = 'all';
+                minimizeMusic();
             } else {
-                widget.classList.add('open');
-                minimized.style.opacity = '0';
-                minimized.style.pointerEvents = 'none';
+                maximizeMusic();
             }
-        }
-
-        function minimizeMusic() {
-            document.getElementById('musicWidget').classList.remove('open');
-            document.getElementById('musicMinimized').style.opacity = '1';
-            document.getElementById('musicMinimized').style.pointerEvents = 'all';
         }
 
         function maximizeMusic() {
             document.getElementById('musicWidget').classList.add('open');
             document.getElementById('musicMinimized').style.opacity = '0';
             document.getElementById('musicMinimized').style.pointerEvents = 'none';
+        }
+
+        function minimizeMusic() {
+            document.getElementById('musicWidget').classList.remove('open');
+            document.getElementById('musicMinimized').style.opacity = '1';
+            document.getElementById('musicMinimized').style.pointerEvents = 'all';
         }
 
         function updateMusicUI() {
@@ -1052,7 +1309,6 @@
                 </div>
             `).join('');
             
-            // Show delete on hover
             list.querySelectorAll('div > div:last-child').forEach(el => {
                 el.parentElement.addEventListener('mouseenter', () => el.style.opacity = '1');
                 el.parentElement.addEventListener('mouseleave', () => el.style.opacity = '0');
@@ -1068,7 +1324,6 @@
 
         function openSettings() {
             document.getElementById('panelTitle').textContent = 'Settings';
-            // Simple settings in panel - you can expand this
             document.getElementById('tasksSection').innerHTML = `
                 <div style="color: var(--text-secondary); line-height: 1.6;">
                     <p style="margin-bottom: 1rem;">Timer Settings:</p>
@@ -1098,7 +1353,6 @@
             state.settings.longBreak = parseInt(document.getElementById('settingLong').value) || 15;
             saveData();
             closePanel();
-            // Reset tasks view
             document.getElementById('tasksSection').innerHTML = `
                 <div style="position: relative; margin-bottom: 1.5rem;">
                     <input type="text" style="width: 100%; padding: 1rem 3rem 1rem 1.25rem; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: white; font-size: 1rem; outline: none;" 
@@ -1123,7 +1377,6 @@
             document.getElementById('panelOverlay').classList.remove('open');
         }
 
-        // System Functions
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
@@ -1135,8 +1388,6 @@
         function toggleMute() {
             state.settings.sound = !state.settings.sound;
             document.getElementById('muteBtn').textContent = state.settings.sound ? '🔊' : '🔇';
-            
-            // Also mute YouTube
             if (player && player.mute) {
                 if (!state.settings.sound) {
                     player.mute();
@@ -1149,11 +1400,9 @@
 
         function playSound(type) {
             if (!state.settings.sound) return;
-            // Simple beep using Web Audio API
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
-            
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
             
@@ -1175,27 +1424,6 @@
         function updateStats() {
             document.getElementById('sessionsCount').textContent = state.stats.sessions;
             document.getElementById('minutesCount').textContent = state.stats.minutes;
-        }
-
-        function showToast(message, icon) {
-            // Simple toast implementation
-            const toast = document.createElement('div');
-            toast.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 2rem;
-                background: var(--glass-bg);
-                backdrop-filter: blur(20px);
-                padding: 1rem 1.5rem;
-                border-radius: 12px;
-                border: 1px solid var(--glass-border);
-                color: white;
-                z-index: 1000;
-                animation: slideIn 0.3s ease;
-            `;
-            toast.textContent = icon + ' ' + message;
-            document.body.appendChild(toast);
-            setTimeout(() => toast.remove(), 3000);
         }
 
         // Storage
@@ -1228,7 +1456,6 @@
             renderTasks();
             updateStats();
             
-            // Background rotation
             setInterval(() => {
                 if (!state.isRunning) return;
                 const bgs = document.querySelectorAll('.bg-image');
@@ -1241,8 +1468,13 @@
                 if (e.key === 'Enter') addTask();
             });
 
-            // Close music widget when clicking outside
+            // Close search results when clicking outside
             document.addEventListener('click', (e) => {
+                const searchSection = document.querySelector('.search-section');
+                if (!searchSection.contains(e.target)) {
+                    hideSearchResults();
+                }
+                
                 const widget = document.getElementById('musicWidget');
                 const btn = document.getElementById('musicBtn');
                 const minimized = document.getElementById('musicMinimized');
@@ -1278,9 +1510,12 @@
                 resetTimer();
             } else if (e.code === 'KeyM') {
                 toggleMusicWidget();
+            } else if (e.code === 'KeyF') {
+                toggleFullscreen();
             } else if (e.code === 'Escape') {
                 closePanel();
                 minimizeMusic();
+                hideSearchResults();
             }
         });
     </script>
